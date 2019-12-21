@@ -1,0 +1,7 @@
+ACTION!="add|change", GOTO="imx6ull_rules_end"
+SUBSYSTEM!="usb", GOTO="imx6ull_rules_end"
+
+ATTRS{idVendor}=="15a2", ATTRS{idProduct}=="0080", TAG+="uaccess"
+ATTRS{idVendor}=="0525", ATTRS{idProduct}=="b4a4", TAG+="uaccess"
+
+LABEL="imx6ull_rules_end"

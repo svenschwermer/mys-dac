@@ -1,0 +1,22 @@
+From fe1719cb6009db169fd56ec4a6834e36cb741e70 Mon Sep 17 00:00:00 2001
+From: Sven Schwermer <sven@svenschwermer.de>
+Date: Sun, 21 Jul 2019 18:35:52 +0200
+Subject: [PATCH] asoc: wm8731: Always enable oscillator for DAC
+
+---
+ sound/soc/codecs/wm8731.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+index 7c8fad865d6b..1af80f2fbdde 100644
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -221,7 +221,7 @@ static int wm8731_check_osc(struct snd_soc_dapm_widget *source,
+ }
+ 
+ static const struct snd_soc_dapm_route wm8731_intercon[] = {
+-	{"DAC", NULL, "OSC", wm8731_check_osc},
++	{"DAC", NULL, "OSC"},
+ 	{"ADC", NULL, "OSC", wm8731_check_osc},
+ 	{"DAC", NULL, "ACTIVE"},
+ 	{"ADC", NULL, "ACTIVE"},

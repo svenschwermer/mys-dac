@@ -1,0 +1,6 @@
+[submodule "u-boot"]
+	path = u-boot
+	url = git@github.com:svenschwermer/u-boot
+[submodule "yocto/poky"]
+	path = yocto/poky
+	url = git://git.yoctoproject.org/poky

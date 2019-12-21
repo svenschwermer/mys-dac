@@ -1,0 +1,30 @@
+From 61e1aaa0fb1a74facb296fea5104b7245c591087 Mon Sep 17 00:00:00 2001
+From: Christina Quast <cquast@hanoverdisplays.com>
+Date: Mon, 8 Apr 2019 10:01:51 -0700
+Subject: [PATCH] ARM: dts: am33xx: Added AM33XX_PADCONF macro
+
+AM33XX_PADCONF takes three instead of two parameters, to make
+future changes to #pinctrl-cells easier.
+
+For old boards which are not mainlined, we left the AM33XX_IOPAD
+macro.
+
+Signed-off-by: Christina Quast <cquast@hanoverdisplays.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ include/dt-bindings/pinctrl/omap.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/dt-bindings/pinctrl/omap.h b/include/dt-bindings/pinctrl/omap.h
+index 49b5dea2b388..625718042413 100644
+--- a/include/dt-bindings/pinctrl/omap.h
++++ b/include/dt-bindings/pinctrl/omap.h
+@@ -65,6 +65,7 @@
+ #define DM814X_IOPAD(pa, val)		OMAP_IOPAD_OFFSET((pa), 0x0800) (val)
+ #define DM816X_IOPAD(pa, val)		OMAP_IOPAD_OFFSET((pa), 0x0800) (val)
+ #define AM33XX_IOPAD(pa, val)		OMAP_IOPAD_OFFSET((pa), 0x0800) (val)
++#define AM33XX_PADCONF(pa, dir, mux)	OMAP_IOPAD_OFFSET((pa), 0x0800) ((dir) | (mux))
+ 
+ /*
+  * Macros to allow using the offset from the padconf physical address
