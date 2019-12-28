@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name ch340e)(type Legacy)(uri ${KIPRJMOD}/ch340e.lib)(options "")(descr ""))
+)

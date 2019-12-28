@@ -1,0 +1,5 @@
+(fp_lib_table
+  (lib (name footprints)(type KiCad)(uri ${KIPRJMOD}/footprints.pretty)(options "")(descr ""))
+  (lib (name micro-match)(type KiCad)(uri ${KIPRJMOD}/../micro-match.pretty)(options "")(descr ""))
+  (lib (name simple-dac)(type KiCad)(uri ${KIPRJMOD}/../simple-dac/footprints.pretty)(options "")(descr ""))
+)
