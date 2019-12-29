@@ -654,7 +654,7 @@
   (gr_arc (start 127.5 125) (end 127.5 125.5) (angle -90) (layer Edge.Cuts) (width 0.05))
   (gr_arc (start 127.5 90) (end 128 90) (angle -90) (layer Edge.Cuts) (width 0.05))
   (gr_arc (start 110.5 90) (end 110.5 89.5) (angle -90) (layer Edge.Cuts) (width 0.05))
-  (gr_text "USB serial\nSchwermer 2019" (at 120.5 120) (layer F.SilkS)
+  (gr_text "USB serial\n2019 Schwermer" (at 120.5 120) (layer F.SilkS)
     (effects (font (size 1 1) (thickness 0.15)))
   )
   (gr_text "1:5V\n2:RX\n3:TX\n4:GND" (at 117.5 97 90) (layer F.SilkS)
