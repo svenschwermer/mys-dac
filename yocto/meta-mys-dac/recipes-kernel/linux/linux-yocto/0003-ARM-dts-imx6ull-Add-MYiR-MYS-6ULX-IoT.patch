@@ -1,19 +1,19 @@
-From 4b1b9f1d70fcc3ec1c13c7dc12e47c66ff6dd1e5 Mon Sep 17 00:00:00 2001
+From 4b61228316d9b683290526387c671d7e0c4c890e Mon Sep 17 00:00:00 2001
 From: Sven Schwermer <sven@svenschwermer.de>
 Date: Wed, 1 Jan 2020 17:28:30 +0100
-Subject: [PATCH 3/3] ARM: dts: imx6ull: Add MYiR MYS-6ULX-IoT
+Subject: [PATCH] ARM: dts: imx6ull: Add MYiR MYS-6ULX-IoT
 
 ---
- arch/arm/boot/dts/imx6ull-mys-6ulx-iot.dts | 214 +++++++++++++++++++++
- 1 file changed, 214 insertions(+)
+ arch/arm/boot/dts/imx6ull-mys-6ulx-iot.dts | 213 +++++++++++++++++++++
+ 1 file changed, 213 insertions(+)
  create mode 100644 arch/arm/boot/dts/imx6ull-mys-6ulx-iot.dts
 
 diff --git a/arch/arm/boot/dts/imx6ull-mys-6ulx-iot.dts b/arch/arm/boot/dts/imx6ull-mys-6ulx-iot.dts
 new file mode 100644
-index 000000000000..ebc0c8c8e05b
+index 000000000000..19d6ebe3b272
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ull-mys-6ulx-iot.dts
-@@ -0,0 +1,214 @@
+@@ -0,0 +1,213 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright 2019 Sven Schwermer
@@ -43,6 +43,11 @@ index 000000000000..ebc0c8c8e05b
 +		regulator-min-microvolt = <3300000>;
 +		regulator-max-microvolt = <3300000>;
 +	};
++};
++
++&clks {
++	assigned-clocks = <&clks IMX6UL_CLK_PLL3_PFD2>;
++	assigned-clock-rates = <320000000>;
 +};
 +
 +&adc1 {
@@ -127,14 +132,11 @@ index 000000000000..ebc0c8c8e05b
 +
 +&usdhc1 {
 +	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-+	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_usdhc1_cd>;
++	pinctrl-0 = <&pinctrl_usdhc1>;
 +	pinctrl-1 = <&pinctrl_usdhc1_100mhz>;
 +	pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
-+	assigned-clocks = <&clks IMX6UL_CLK_USDHC1_SEL>, <&clks IMX6UL_CLK_USDHC1>;
-+	assigned-clock-parents = <&clks IMX6UL_CLK_PLL2_PFD2>;
-+	assigned-clock-rates = <0>, <198000000>;
 +	cd-gpios = <&gpio1 19 GPIO_ACTIVE_LOW>;
-+	bus-width = <4>;
++	no-1-8-v;
 +	status = "okay";
 +};
 +
@@ -183,40 +185,37 @@ index 000000000000..ebc0c8c8e05b
 +
 +	pinctrl_usdhc1: usdhc1-grp {
 +		fsl,pins = <
-+			MX6UL_PAD_SD1_CLK__USDHC1_CLK       0x17059
-+			MX6UL_PAD_SD1_CMD__USDHC1_CMD       0x10059
-+			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0   0x17059
-+			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1   0x17059
-+			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2   0x17059
-+			MX6UL_PAD_SD1_DATA3__USDHC1_DATA3   0x17059
++			MX6UL_PAD_SD1_CLK__USDHC1_CLK     0x17059
++			MX6UL_PAD_SD1_CMD__USDHC1_CMD     0x10059
++			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0 0x17059
++			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1 0x17059
++			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2 0x17059
++			MX6UL_PAD_SD1_DATA3__USDHC1_DATA3 0x17059
++			MX6UL_PAD_UART1_RTS_B__GPIO1_IO19 0x100b0
 +		>;
 +	};
 +
 +	pinctrl_usdhc1_100mhz: usdhc1-100mhz-grp {
 +		fsl,pins = <
-+			MX6UL_PAD_SD1_CLK__USDHC1_CLK       0x170b9
-+			MX6UL_PAD_SD1_CMD__USDHC1_CMD       0x100b9
-+			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0   0x170b9
-+			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1   0x170b9
-+			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2   0x170b9
-+			MX6UL_PAD_SD1_DATA3__USDHC1_DATA3   0x170b9
++			MX6UL_PAD_SD1_CLK__USDHC1_CLK     0x170b9
++			MX6UL_PAD_SD1_CMD__USDHC1_CMD     0x100b9
++			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0 0x170b9
++			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1 0x170b9
++			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2 0x170b9
++			MX6UL_PAD_SD1_DATA3__USDHC1_DATA3 0x170b9
++			MX6UL_PAD_UART1_RTS_B__GPIO1_IO19 0x100b0
 +		>;
 +	};
 +
 +	pinctrl_usdhc1_200mhz: usdhc1-200mhz-grp {
 +		fsl,pins = <
-+			MX6UL_PAD_SD1_CLK__USDHC1_CLK       0x170f9
-+			MX6UL_PAD_SD1_CMD__USDHC1_CMD       0x100f9
-+			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0   0x170b9
-+			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1   0x170b9
-+			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2   0x170b9
-+			MX6UL_PAD_SD1_DATA3__USDHC1_DATA3   0x170b9
-+		>;
-+	};
-+
-+	pinctrl_usdhc1_cd: usdhc1-cd-grp {
-+		fsl,pins = <
-+			MX6UL_PAD_UART1_RTS_B__GPIO1_IO19	0x100b0
++			MX6UL_PAD_SD1_CLK__USDHC1_CLK     0x170f9
++			MX6UL_PAD_SD1_CMD__USDHC1_CMD     0x100f9
++			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0 0x170f9
++			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1 0x170f9
++			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2 0x170f9
++			MX6UL_PAD_SD1_DATA3__USDHC1_DATA3 0x170f9
++			MX6UL_PAD_UART1_RTS_B__GPIO1_IO19 0x100b0
 +		>;
 +	};
 +};
@@ -228,6 +227,3 @@ index 000000000000..ebc0c8c8e05b
 +		>;
 +	};
 +};
--- 
-2.24.1
-
