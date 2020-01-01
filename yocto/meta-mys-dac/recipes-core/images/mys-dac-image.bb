@@ -12,6 +12,9 @@ IMAGE_INSTALL = "\
     mpg123 \
     python3-pycairo \
     python3-modules \
+    mtd-utils \
+    mtd-utils-ubifs \
+    imx-kobs \
     "
 
 inherit core-image

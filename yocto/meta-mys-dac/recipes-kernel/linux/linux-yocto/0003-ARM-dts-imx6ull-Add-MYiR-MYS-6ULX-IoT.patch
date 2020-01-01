@@ -1,0 +1,233 @@
+From 4b1b9f1d70fcc3ec1c13c7dc12e47c66ff6dd1e5 Mon Sep 17 00:00:00 2001
+From: Sven Schwermer <sven@svenschwermer.de>
+Date: Wed, 1 Jan 2020 17:28:30 +0100
+Subject: [PATCH 3/3] ARM: dts: imx6ull: Add MYiR MYS-6ULX-IoT
+
+---
+ arch/arm/boot/dts/imx6ull-mys-6ulx-iot.dts | 214 +++++++++++++++++++++
+ 1 file changed, 214 insertions(+)
+ create mode 100644 arch/arm/boot/dts/imx6ull-mys-6ulx-iot.dts
+
+diff --git a/arch/arm/boot/dts/imx6ull-mys-6ulx-iot.dts b/arch/arm/boot/dts/imx6ull-mys-6ulx-iot.dts
+new file mode 100644
+index 000000000000..ebc0c8c8e05b
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ull-mys-6ulx-iot.dts
+@@ -0,0 +1,214 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2019 Sven Schwermer
++ */
++
++/dts-v1/;
++#include <dt-bindings/gpio/gpio.h>
++#include "imx6ull.dtsi"
++
++/ {
++	model = "MYiR MYS-6ULX-IOT";
++	compatible = "myir,mys-6ulx-iot", "fsl,imx6ull";
++
++	chosen {
++		stdout-path = &uart1;
++	};
++
++	memory@80000000 {
++		device_type = "memory";
++		reg = <0x80000000 0x10000000>;
++	};
++
++	reg_vdd_3v3: regulator-vdd-3v3 {
++		compatible = "regulator-fixed";
++		regulator-name = "VDD_3V3";
++		regulator-always-on;
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++	};
++};
++
++&adc1 {
++	vref-supply = <&reg_vdd_3v3>;
++};
++
++&fec1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_enet1 &pinctrl_ethphy_reset>;
++	phy-mode = "rmii";
++	phy-handle = <&ethphy>;
++	phy-reset-gpios = <&gpio5 6 GPIO_ACTIVE_LOW>;
++	status = "okay";
++
++	mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		ethphy: ethernet-phy@0 {
++			compatible = "ethernet-phy-ieee802.3-c22";
++			reg = <0>;
++		};
++	};
++};
++
++&gpmi {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_gpmi_nand>;
++	nand-on-flash-bbt;
++	status = "okay";
++
++	#address-cells = <1>;
++	#size-cells = <1>;
++
++	partition@0 {
++		label = "spl";
++		reg = <0x0 0x100000>; /* 1 MiB */
++	};
++
++	partition@20000 {
++		label = "u-boot";
++		reg = <0x100000 0x100000>; /* 1 MiB */
++	};
++
++	partition@120000 {
++		label = "u-boot-env";
++		reg = <0x200000 0x20000>; /* 128 kiB */
++	};
++
++	partition@140000 {
++		label = "rootfs";
++		reg = <0x220000 0x0>;
++	};
++};
++
++&sdma {
++	status = "okay";
++};
++
++&snvs_pwrkey {
++	status = "disabled";
++};
++
++&uart1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart1>;
++	status = "okay";
++};
++
++&usbotg1 {
++	dr_mode = "otg";
++	srp-disable;
++	hnp-disable;
++	adp-disable;
++	status = "okay";
++};
++
++&usbotg2 {
++	dr_mode = "host";
++	status = "okay";
++};
++
++&usdhc1 {
++	pinctrl-names = "default", "state_100mhz", "state_200mhz";
++	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_usdhc1_cd>;
++	pinctrl-1 = <&pinctrl_usdhc1_100mhz>;
++	pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
++	assigned-clocks = <&clks IMX6UL_CLK_USDHC1_SEL>, <&clks IMX6UL_CLK_USDHC1>;
++	assigned-clock-parents = <&clks IMX6UL_CLK_PLL2_PFD2>;
++	assigned-clock-rates = <0>, <198000000>;
++	cd-gpios = <&gpio1 19 GPIO_ACTIVE_LOW>;
++	bus-width = <4>;
++	status = "okay";
++};
++
++&iomuxc {
++	pinctrl_enet1: enet1-grp {
++		fsl,pins = <
++			MX6UL_PAD_GPIO1_IO06__ENET1_MDIO	0x1b0b0
++			MX6UL_PAD_GPIO1_IO07__ENET1_MDC		0x1b0b0
++			MX6UL_PAD_ENET1_RX_DATA0__ENET1_RDATA00	0x1b0b0
++			MX6UL_PAD_ENET1_RX_DATA1__ENET1_RDATA01	0x1b0b0
++			MX6UL_PAD_ENET1_RX_EN__ENET1_RX_EN	0x1b0b0
++			MX6UL_PAD_ENET1_RX_ER__ENET1_RX_ER	0x1b0b0
++			MX6UL_PAD_ENET1_TX_CLK__ENET1_REF_CLK1	0x4001b031
++			MX6UL_PAD_ENET1_TX_DATA0__ENET1_TDATA00	0x1b0b0
++			MX6UL_PAD_ENET1_TX_DATA1__ENET1_TDATA01	0x1b0b0
++			MX6UL_PAD_ENET1_TX_EN__ENET1_TX_EN	0x1b0b0
++		>;
++	};
++
++	pinctrl_gpmi_nand: gpmi-nand-grp {
++		fsl,pins = <
++			MX6UL_PAD_NAND_CLE__RAWNAND_CLE		0x0b0b1
++			MX6UL_PAD_NAND_ALE__RAWNAND_ALE		0x0b0b1
++			MX6UL_PAD_NAND_WP_B__RAWNAND_WP_B	0x0b0b1
++			MX6UL_PAD_NAND_READY_B__RAWNAND_READY_B	0x0b000
++			MX6UL_PAD_NAND_CE0_B__RAWNAND_CE0_B	0x0b0b1
++			MX6UL_PAD_NAND_RE_B__RAWNAND_RE_B	0x0b0b1
++			MX6UL_PAD_NAND_WE_B__RAWNAND_WE_B	0x0b0b1
++			MX6UL_PAD_NAND_DATA00__RAWNAND_DATA00	0x0b0b1
++			MX6UL_PAD_NAND_DATA01__RAWNAND_DATA01	0x0b0b1
++			MX6UL_PAD_NAND_DATA02__RAWNAND_DATA02	0x0b0b1
++			MX6UL_PAD_NAND_DATA03__RAWNAND_DATA03	0x0b0b1
++			MX6UL_PAD_NAND_DATA04__RAWNAND_DATA04	0x0b0b1
++			MX6UL_PAD_NAND_DATA05__RAWNAND_DATA05	0x0b0b1
++			MX6UL_PAD_NAND_DATA06__RAWNAND_DATA06	0x0b0b1
++			MX6UL_PAD_NAND_DATA07__RAWNAND_DATA07	0x0b0b1
++		>;
++	};
++
++	pinctrl_uart1: uart1-grp {
++		fsl,pins = <
++			MX6UL_PAD_UART1_TX_DATA__UART1_DCE_TX	0x1b0b1
++			MX6UL_PAD_UART1_RX_DATA__UART1_DCE_RX	0x1b0b1
++		>;
++	};
++
++	pinctrl_usdhc1: usdhc1-grp {
++		fsl,pins = <
++			MX6UL_PAD_SD1_CLK__USDHC1_CLK       0x17059
++			MX6UL_PAD_SD1_CMD__USDHC1_CMD       0x10059
++			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0   0x17059
++			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1   0x17059
++			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2   0x17059
++			MX6UL_PAD_SD1_DATA3__USDHC1_DATA3   0x17059
++		>;
++	};
++
++	pinctrl_usdhc1_100mhz: usdhc1-100mhz-grp {
++		fsl,pins = <
++			MX6UL_PAD_SD1_CLK__USDHC1_CLK       0x170b9
++			MX6UL_PAD_SD1_CMD__USDHC1_CMD       0x100b9
++			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0   0x170b9
++			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1   0x170b9
++			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2   0x170b9
++			MX6UL_PAD_SD1_DATA3__USDHC1_DATA3   0x170b9
++		>;
++	};
++
++	pinctrl_usdhc1_200mhz: usdhc1-200mhz-grp {
++		fsl,pins = <
++			MX6UL_PAD_SD1_CLK__USDHC1_CLK       0x170f9
++			MX6UL_PAD_SD1_CMD__USDHC1_CMD       0x100f9
++			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0   0x170b9
++			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1   0x170b9
++			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2   0x170b9
++			MX6UL_PAD_SD1_DATA3__USDHC1_DATA3   0x170b9
++		>;
++	};
++
++	pinctrl_usdhc1_cd: usdhc1-cd-grp {
++		fsl,pins = <
++			MX6UL_PAD_UART1_RTS_B__GPIO1_IO19	0x100b0
++		>;
++	};
++};
++
++&iomuxc_snvs {
++	pinctrl_ethphy_reset: ethphy-grp {
++		fsl,pins = <
++			MX6ULL_PAD_SNVS_TAMPER6__GPIO5_IO06 0x130b0
++		>;
++	};
++};
+-- 
+2.24.1
+

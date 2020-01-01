@@ -7,3 +7,6 @@
 [submodule "imx_usb_loader"]
 	path = imx_usb_loader
 	url = https://github.com/boundarydevices/imx_usb_loader
+[submodule "yocto/meta-freescale"]
+	path = yocto/meta-freescale
+	url = git://git.yoctoproject.org/meta-freescale

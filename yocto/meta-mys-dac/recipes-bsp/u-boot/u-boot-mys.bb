@@ -2,6 +2,9 @@ require recipes-bsp/u-boot/u-boot-common.inc
 require recipes-bsp/u-boot/u-boot.inc
 inherit externalsrc
 
+PROVIDES += "u-boot"
+RPROVIDES_${PN} += "u-boot"
+
 SRCREV = "${AUTOREV}"
 SRC_URI = ""
 
