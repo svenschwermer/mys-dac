@@ -1,0 +1,2 @@
+export PATH="$PWD/.bin:$PATH"
+. ./poky/oe-init-build-env
