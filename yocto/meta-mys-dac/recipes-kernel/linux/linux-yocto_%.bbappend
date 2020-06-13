@@ -8,6 +8,6 @@ SRC_URI += "file://oled.cfg \
             file://wm8731.cfg \
             file://wm8804.cfg \
             file://0001-staging-fbtft-Add-SSD1322-driver.patch \
-            file://0002-asoc-wm8731-Always-enable-oscillator-for-DAC.patch \
-            file://0003-ARM-dts-imx6ull-Add-MYiR-MYS-6ULX-IoT.patch \
+            file://0002-ARM-dts-imx6ull-Add-MYiR-MYS-6ULX-IoT.patch \
+            file://0003-mys-6ulx-iot-Add-sound-card-with-WM8731.patch \
             "

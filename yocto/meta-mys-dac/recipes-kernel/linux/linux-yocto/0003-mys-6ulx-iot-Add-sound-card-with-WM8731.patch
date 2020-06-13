@@ -1,0 +1,164 @@
+From 4f4847a46bbee37603bd0e2ac991fc287142022c Mon Sep 17 00:00:00 2001
+From: Sven Schwermer <sven@svenschwermer.de>
+Date: Sun, 2 Feb 2020 09:50:58 +0100
+Subject: [PATCH] mys-6ulx-iot: Add sound card with WM8731
+
+Audio playback functional.
+---
+ arch/arm/boot/dts/imx6ull-mys-6ulx-iot.dts | 99 ++++++++++++++++++++--
+ 1 file changed, 91 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm/boot/dts/imx6ull-mys-6ulx-iot.dts b/arch/arm/boot/dts/imx6ull-mys-6ulx-iot.dts
+index 19d6ebe3b272..0261251568c4 100644
+--- a/arch/arm/boot/dts/imx6ull-mys-6ulx-iot.dts
++++ b/arch/arm/boot/dts/imx6ull-mys-6ulx-iot.dts
+@@ -27,17 +27,55 @@
+ 		regulator-min-microvolt = <3300000>;
+ 		regulator-max-microvolt = <3300000>;
+ 	};
++
++	sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,name = "test-card";
++		simple-audio-card,widgets =
++					"Headphone", "Headphone Jack";
++		simple-audio-card,routing =
++					"Headphone Jack", "RHPOUT",
++					"Headphone Jack", "LHPOUT";
++
++		simple-audio-card,dai-link@0 {
++			reg = <0>;
++			format = "i2s";
++			bitclock-master = <&dailink0_master>;
++			frame-master = <&dailink0_master>;
++
++			dailink0_master: cpu {
++				sound-dai = <&sai2>;
++			};
++
++			codec {
++				sound-dai = <&wm8731>;
++			};
++		};
++	};
+ };
+ 
+ &clks {
+-	assigned-clocks = <&clks IMX6UL_CLK_PLL3_PFD2>;
+-	assigned-clock-rates = <320000000>;
++	assigned-clocks = <&clks IMX6UL_CLK_PLL4_AUDIO_DIV>;
++	/* 786,432,000 / 64 = 12,288,000 = 8 * (2 * 48,000 * 16) */
++	assigned-clock-rates = <786432000>;
+ };
+ 
+ &adc1 {
+ 	vref-supply = <&reg_vdd_3v3>;
+ };
+ 
++&sai2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_sai2>;
++	/* PLL4_AUDIO_DIV is the parent clock to SAI2_SEL. The SAI2
++	   clock shall have the clock frequency 12.288 MHz. */
++	assigned-clocks = <&clks IMX6UL_CLK_SAI2_SEL>, <&clks IMX6UL_CLK_SAI2>;
++	assigned-clock-parents = <&clks IMX6UL_CLK_PLL4_AUDIO_DIV>;
++	assigned-clock-rates = <0>, <12288000>;
++	fsl,sai-mclk-direction-output;
++	status = "okay";
++};
++
+ &fec1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_enet1 &pinctrl_ethphy_reset>;
+@@ -124,6 +162,34 @@
+ 	status = "okay";
+ };
+ 
++&i2c2 {
++	clock-frequency = <100000>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_i2c2>;
++	status = "okay";
++
++	wm8805: wm8805@3a {
++		#sound-dai-cells = <0>;
++		compatible = "wlf,wm8804";
++		reg = <0x3a>;
++		PVDD-supply = <&reg_vdd_3v3>;
++		DVDD-supply = <&reg_vdd_3v3>;
++		wlf,reset-gpio = <&gpio4 25 GPIO_ACTIVE_HIGH>;
++	};
++
++	wm8731: wm8731@1a {
++		#sound-dai-cells = <0>;
++		compatible = "wlf,wm8731";
++		reg = <0x1a>;
++		AVDD-supply = <&reg_vdd_3v3>;
++		HPVDD-supply = <&reg_vdd_3v3>;
++		DCVDD-supply = <&reg_vdd_3v3>;
++		DBVDD-supply = <&reg_vdd_3v3>;
++		clocks = <&clks IMX6UL_CLK_SAI2>;
++		clock-names = "mclk";
++	};
++};
++
+ &iomuxc {
+ 	pinctrl_enet1: enet1-grp {
+ 		fsl,pins = <
+@@ -169,8 +235,8 @@
+ 
+ 	pinctrl_usdhc1: usdhc1-grp {
+ 		fsl,pins = <
+-			MX6UL_PAD_SD1_CLK__USDHC1_CLK     0x17059
+-			MX6UL_PAD_SD1_CMD__USDHC1_CMD     0x10059
++			MX6UL_PAD_SD1_CLK__USDHC1_CLK	 0x17059
++			MX6UL_PAD_SD1_CMD__USDHC1_CMD	 0x10059
+ 			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0 0x17059
+ 			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1 0x17059
+ 			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2 0x17059
+@@ -181,8 +247,8 @@
+ 
+ 	pinctrl_usdhc1_100mhz: usdhc1-100mhz-grp {
+ 		fsl,pins = <
+-			MX6UL_PAD_SD1_CLK__USDHC1_CLK     0x170b9
+-			MX6UL_PAD_SD1_CMD__USDHC1_CMD     0x100b9
++			MX6UL_PAD_SD1_CLK__USDHC1_CLK	 0x170b9
++			MX6UL_PAD_SD1_CMD__USDHC1_CMD	 0x100b9
+ 			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0 0x170b9
+ 			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1 0x170b9
+ 			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2 0x170b9
+@@ -193,8 +259,8 @@
+ 
+ 	pinctrl_usdhc1_200mhz: usdhc1-200mhz-grp {
+ 		fsl,pins = <
+-			MX6UL_PAD_SD1_CLK__USDHC1_CLK     0x170f9
+-			MX6UL_PAD_SD1_CMD__USDHC1_CMD     0x100f9
++			MX6UL_PAD_SD1_CLK__USDHC1_CLK	 0x170f9
++			MX6UL_PAD_SD1_CMD__USDHC1_CMD	 0x100f9
+ 			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0 0x170f9
+ 			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1 0x170f9
+ 			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2 0x170f9
+@@ -202,6 +268,23 @@
+ 			MX6UL_PAD_UART1_RTS_B__GPIO1_IO19 0x100b0
+ 		>;
+ 	};
++
++	pinctrl_i2c2: i2c2-grp {
++		fsl,pins = <
++			MX6UL_PAD_UART5_TX_DATA__I2C2_SCL	0x4001b8b0
++			MX6UL_PAD_UART5_RX_DATA__I2C2_SDA	0x4001b8b0
++		>;
++	};
++
++	pinctrl_sai2: sai2-grp {
++		fsl,pins = <
++			MX6UL_PAD_JTAG_TCK__SAI2_RX_DATA    0x11088
++			MX6UL_PAD_JTAG_TDI__SAI2_TX_BCLK    0x17088
++			MX6UL_PAD_JTAG_TDO__SAI2_TX_SYNC    0x17088
++			MX6UL_PAD_JTAG_TRST_B__SAI2_TX_DATA 0x11088
++			MX6UL_PAD_JTAG_TMS__SAI2_MCLK       0x17088
++		>;
++	};
+ };
+ 
+ &iomuxc_snvs {

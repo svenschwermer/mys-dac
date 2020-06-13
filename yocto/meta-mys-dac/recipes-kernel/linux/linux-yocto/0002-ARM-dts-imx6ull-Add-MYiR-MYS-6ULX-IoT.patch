@@ -1,4 +1,4 @@
-From 4b61228316d9b683290526387c671d7e0c4c890e Mon Sep 17 00:00:00 2001
+From b814c9caa885edc51961ac7f851113f9d98f2fa8 Mon Sep 17 00:00:00 2001
 From: Sven Schwermer <sven@svenschwermer.de>
 Date: Wed, 1 Jan 2020 17:28:30 +0100
 Subject: [PATCH] ARM: dts: imx6ull: Add MYiR MYS-6ULX-IoT
